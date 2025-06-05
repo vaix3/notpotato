@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>potatonot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #05051a;
+            color: #ffffff;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 2rem 0;
+            background: rgba(5, 5, 26, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(-100%);
+            animation: slideDown 1s ease-out 0.5s forwards;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Nav logo styles - these remain for the top navigation */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 1s forwards;
+        }
+
+        .logo-img { /* This applies to the nav logo unless overridden */
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #4a90e2;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            position: relative;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        .nav-links li:nth-child(1) a { animation-delay: 1.1s; }
+        .nav-links li:nth-child(2) a { animation-delay: 1.2s; }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #4a90e2;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-title-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center horizontally */
+            margin-bottom: 1rem;
+            gap: 20px; /* Space between logo and text */
+        }
+
+        /* New styles for the logo in the hero section */
+        .hero-title-wrapper .logo-img {
+            /* Adjust these values to match the visual size of the h1 text */
+            width: clamp(4rem, 8vw, 12rem); /* Match h1 font-size clamp */
+            height: clamp(4rem, 8vw, 12rem); /* Match h1 font-size clamp */
+            
+            /* You can keep or remove these based on if you want it circular or to blend */
+            border-radius: 50%; 
+            object-fit: cover;
+            border: 2px solid #4a90e2;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+
+            /* Animation specific to this logo */
+            animation: morphText 2s ease-out 1.5s forwards;
+            opacity: 0;
+            transform: translateY(50px) scale(0.8);
+        }
+
+        .hero-content h1 {
+            font-size: clamp(4rem, 8vw, 12rem);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            /* Removed margin-bottom here, it's now on hero-title-wrapper */
+            opacity: 0;
+            transform: translateY(50px);
+            background: linear-gradient(45deg, #4a90e2, #a8c0ea, #ffffff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: morphText 2s ease-out 1.5s forwards, gradientShift 3s ease-in-out infinite;
+        }
+
+        .hero-content p {
+            font-size: 1.5rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease-out 2s forwards;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 2px solid #4a90e2;
+            color: #4a90e2;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease-out 2.3s forwards;
+        }
+
+        .hero-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: #4a90e2;
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .hero-cta:hover::before {
+            left: 0;
+        }
+
+        .hero-cta:hover {
+            color: #05051a;
+            transform: translateY(-5px);
+        }
+
+        .section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 1s ease-out;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: clamp(3rem, 6vw, 8rem);
+            font-weight: 900;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, #ffffff, #a8c0ea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(168, 192, 234, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #4a90e2, #a8c0ea);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover::before {
+            transform: translateX(0);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(74, 144, 226, 0.3);
+            box-shadow: 0 20px 60px rgba(74, 144, 226, 0.1);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #4a90e2;
+        }
+
+        .floating-element {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(74, 144, 226, 0.1), transparent);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .floating-element:nth-child(3) {
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        .contact {
+            text-align: center;
+            padding: 5rem 0;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .contact-link:hover {
+            background: rgba(74, 144, 226, 0.1);
+            border-color: #4a90e2;
+            transform: translateY(-5px);
+        }
+
+        .email-copied-popup {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(74, 144, 226, 0.9);
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out, visibility 0.3s ease-out;
+            z-index: 1001;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .email-copied-popup.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(-10px);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes morphText {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes gradientShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-30px) rotate(180deg);
+            }
+        }
+
+        .skill-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #4a90e2, #a8c0ea);
+            border-radius: 2px;
+            width: 0;
+            transition: width 2s ease-out;
+        }
+
+        .magnetic {
+            transition: transform 0.2s ease-out;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            /* Adjust nav logo for small screens */
+            .logo-text {
+                font-size: 1.2rem;
+            }
+
+            .logo-img { /* This specific selector still applies to the nav logo */
+                width: 30px;
+                height: 30px;
+            }
+
+            /* Adjust hero logo for small screens */
+            .hero-title-wrapper .logo-img {
+                width: clamp(3rem, 6vw, 8rem); /* Match section title size for small screens */
+                height: clamp(3rem, 6vw, 8rem); /* Match section title size for small screens */
+            }
+
+            .hero-title-wrapper {
+                flex-direction: column; /* Stack logo and text on smaller screens */
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particles"></canvas>
+    <section class="hero">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        
+        <div class="hero-content">
+            <div class="hero-title-wrapper">
+                <img src="logo.png" alt="Logo" class="logo-img">
+                <h1>potatonot</h1>
+            </div>
+            <p>Games • Websites • Digital Experiences</p>
+            <div class="hero-buttons">
+                <a href="#about" class="hero-cta magnetic">About Me</a>
+                <a href="#contact" class="hero-cta magnetic">Contact</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="section-title">About</h2>
+            <div class="grid">
+                <div class="card magnetic">
+                    <h3>Gaming</h3>
+                    <p>I like playing games mainly fps, souls like and racing games.</p>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="95"></div>
+                    </div>
+                </div>
+                <div class="card magnetic">
+                    <h3>Game Development</h3>
+                    <p>I like to create games and am learning different game engines to make various games.</p>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="90"></div>
+                    </div>
+                </div>
+                <div class="card magnetic">
+                    <h3>Web Development</h3>
+                    <p>I enjoy building websites and web applications using modern technologies.</p>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="85"></div>
+                    </div>
+                </div>
+                <div class="card magnetic">
+                    <h3>3D Modeling</h3>
+                    <p>I create 3D models and assets as a hobby and for personal projects.</p>
+                    <div class="skill-bar">
+                        <div class="skill-progress" data-width="75"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section contact">
+        <div class="container">
+            <h2 class="section-title">Let's Connect</h2>
+            <div class="contact-links">
+                <a href="#" class="contact-link magnetic" id="email-link" data-email="potatonot.ngag@gmail.com">Email</a>
+                <a href="https://github.com/vaix3" class="contact-link magnetic" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a href="https://discord.gg/pekPujz7" class="contact-link magnetic" target="_blank" rel="noopener noreferrer">Discord</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="email-copied-popup" id="email-copied-popup">
+        Email Copied!
+    </div>
+
+    <script>
+        class ParticleSystem {
+            constructor() {
+                this.canvas = document.getElementById('particles');
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+                this.mouseX = 0;
+                this.mouseY = 0;
+                
+                this.resize();
+                this.init();
+                this.animate();
+                
+                window.addEventListener('resize', () => this.resize());
+                document.addEventListener('mousemove', (e) => {
+                    this.mouseX = e.clientX;
+                    this.mouseY = e.clientY;
+                });
+            }
+            
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+            
+            init() {
+                for (let i = 0; i < 80; i++) {
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        size: Math.random() * 2 + 1,
+                        opacity: Math.random() * 0.5 + 0.2
+                    });
+                }
+            }
+            
+            animate() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.particles.forEach((particle, index) => {
+                    const dx = this.mouseX - particle.x;
+                    const dy = this.mouseY - particle.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 100) {
+                        particle.vx += dx * 0.0001;
+                        particle.vy += dy * 0.0001;
+                    }
+                    
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    
+                    if (particle.x < 0 || particle.x > this.canvas.width) particle.vx *= -1;
+                    if (particle.y < 0 || particle.y > this.canvas.height) particle.vy *= -1;
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    this.ctx.fillStyle = `rgba(74, 144, 226, ${particle.opacity})`;
+                    this.ctx.fill();
+                    
+                    this.particles.forEach((otherParticle, otherIndex) => {
+                        if (index !== otherIndex) {
+                            const dx = particle.x - otherParticle.x;
+                            const dy = particle.y - otherParticle.y;
+                            const distance = Math.sqrt(dx * dx + dy * dy);
+                            
+                            if (distance < 80) {
+                                this.ctx.beginPath();
+                                this.ctx.moveTo(particle.x, particle.y);
+                                this.ctx.lineTo(otherParticle.x, otherParticle.y);
+                                this.ctx.strokeStyle = `rgba(74, 144, 226, ${0.1 - distance / 800})`;
+                                this.ctx.stroke();
+                            }
+                        }
+                    });
+                });
+                
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+        
+        class ScrollAnimations {
+            constructor() {
+                this.sections = document.querySelectorAll('.section');
+                this.skillBars = document.querySelectorAll('.skill-progress');
+                this.cards = document.querySelectorAll('.card');
+                
+                this.observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+                
+                this.observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            
+                            if (entry.target.querySelector('.skill-progress')) {
+                                this.animateSkillBars(entry.target);
+                            }
+                        }
+                    });
+                }, this.observerOptions);
+                
+                this.sections.forEach(section => {
+                    this.observer.observe(section);
+                });
+                
+                this.initMagneticEffect();
+            }
+            
+            animateSkillBars(section) {
+                const skillBars = section.querySelectorAll('.skill-progress');
+                skillBars.forEach((bar, index) => {
+                    setTimeout(() => {
+                        const width = bar.getAttribute('data-width');
+                        bar.style.width = width + '%';
+                    }, index * 200);
+                });
+            }
+            
+            initMagneticEffect() {
+                const magneticElements = document.querySelectorAll('.magnetic');
+                
+                magneticElements.forEach(element => {
+                    element.addEventListener('mousemove', (e) => {
+                        const rect = element.getBoundingClientRect();
+                        const x = e.clientX - rect.left - rect.width / 2;
+                        const y = e.clientY - rect.top - rect.height / 2;
+                        
+                        element.style.transform = `translate(${x * 0.1}px, ${y * 0.1}px)`;
+                    });
+                    
+                    element.addEventListener('mouseleave', () => {
+                        element.style.transform = 'translate(0px, 0px)';
+                    });
+                });
+            }
+        }
+        
+        class SmoothScroll {
+            constructor() {
+                this.links = document.querySelectorAll('a[href^="#"]');
+                this.init();
+            }
+            
+            init() {
+                this.links.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        if (link.getAttribute('href') === '#') {
+                            return;
+                        }
+                        e.preventDefault();
+                        const targetId = link.getAttribute('href');
+                        const targetElement = document.querySelector(targetId);
+                        
+                        if (targetElement) {
+                            targetElement.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    });
+                });
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            new ParticleSystem();
+            new ScrollAnimations();
+            new SmoothScroll();
+            
+            const emailLink = document.getElementById('email-link');
+            const emailPopup = document.getElementById('email-copied-popup');
+            let popupTimeout;
+
+            emailLink.addEventListener('click', async (e) => {
+                e.preventDefault();
+                const emailAddress = emailLink.getAttribute('data-email');
+                try {
+                    await navigator.clipboard.writeText(emailAddress);
+                    emailPopup.classList.add('show');
+                    if (popupTimeout) {
+                        clearTimeout(popupTimeout);
+                    }
+                    popupTimeout = setTimeout(() => {
+                        emailPopup.classList.remove('show');
+                    }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy email: ', err);
+                    alert('Failed to copy email. Please copy it manually: ' + emailAddress);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
